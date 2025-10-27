@@ -6,12 +6,17 @@ import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/i18n";
+import useProfile from "@/hooks/use-profile";
 
 const Dashboard = () => {
   const [isSOS, setIsSOS] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useI18n();
+  const { profile } = useProfile();
+
+  const initials = (profile?.name || "").split(" ").map(s => s[0] || "").slice(0,2).join("").toUpperCase();
+  const frontName = (profile?.name || "").split(" ")[0] || profile?.name || "";
 
   const handleSOSPress = () => {
     if (!isSOS) {
@@ -57,15 +62,15 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <header className="bg-card border-b border-border shadow-soft px-6 py-4">
+      <header className="bg-card border-b border-border shadow-soft px-6 py-8 pb-28 relative overflow-visible">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-sm font-semibold text-primary">AS</span>
+              <span className="text-sm font-semibold text-primary">{initials}</span>
             </div>
             <div>
-              <h2 className="font-semibold text-foreground">Ayesha Siddika</h2>
-              <p className="text-xs text-muted-foreground">Mirpur, Dhaka</p>
+              <h2 className="font-semibold text-foreground">{frontName}</h2>
+              <p className="text-xs text-muted-foreground">{profile?.address?.split(",")[0] ?? "Mirpur, Dhaka"}</p>
             </div>
           </div>
           
@@ -79,20 +84,23 @@ const Dashboard = () => {
             {isSOS ? 'SOS SENT' : 'Safe'}
           </div>
         </div>
+        {/* SOS Button positioned relative to header so it scrolls with the page */}
+        <div className="absolute left-1/2 -translate-x-1/2 sm:-bottom-16 md:-bottom-20 lg:-bottom-24 z-20">
+          <SOSButton onPress={handleSOSPress} isActive={isSOS} />
+        </div>
       </header>
 
       {/* Main Content */}
-      <main className="px-6 py-8">
+      <main className="px-6 pt-8 pb-8">
+        {/* spacer to account for SOS overlap */}
+        <div className="h-20 md:h-24 lg:h-28" />
         {/* Greeting */}
         <div className="mb-8">
             <h1 className="text-2xl font-bold text-foreground mb-1">{t("dashboard.greetingTitle")}</h1>
           <p className="text-muted-foreground">{t("dashboard.greetingSubtitle")}</p>
         </div>
 
-        {/* SOS Button */}
-        <div className="flex items-center justify-center mb-12">
-          <SOSButton onPress={handleSOSPress} isActive={isSOS} />
-        </div>
+        
 
         {/* Quick Actions */}
         <div className="space-y-3">

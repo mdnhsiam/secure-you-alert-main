@@ -48,7 +48,11 @@ const IncidentCard = ({ incident, onLike, onDelete, onEdit }: any) => {
         <div className="text-xs text-muted-foreground">{new Date(incident.id).toLocaleString()}</div>
       </div>
 
-      {incident.image && <img src={incident.image} alt="incident" className="w-full h-48 object-cover rounded-md mb-3" />}
+      {incident.image && (
+        <div className="w-full mb-3">
+          <img src={incident.image} alt="incident" className="w-full max-h-56 mx-auto rounded-md mb-3 object-contain" />
+        </div>
+      )}
 
       {incident.text && <p className="text-sm text-muted-foreground mb-3">{incident.text}</p>}
 

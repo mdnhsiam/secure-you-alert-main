@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/i18n";
+import useProfile from "@/hooks/use-profile";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useI18n();
+  const { profile, setProfile } = useProfile();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +33,16 @@ const Login = () => {
       title: t("login.errors.welcomeBackTitle"),
       description: t("login.errors.welcomeBackMsg")
     });
-    
+    // update stored profile for this user (keep existing name if present)
+    try {
+      const name = profile?.name || (email.split("@")[0] || email);
+      setProfile({
+        ...(profile || {}),
+        name,
+        email,
+      });
+    } catch (e) {}
+
     navigate("/dashboard");
   };
 

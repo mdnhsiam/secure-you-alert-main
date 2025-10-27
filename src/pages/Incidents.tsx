@@ -89,8 +89,8 @@ const Incidents = () => {
   return (
     <div className="min-h-screen bg-background pb-20 px-4">
       <header className="py-4">
-        <h1 className="text-xl font-bold text-foreground">{t("incidents.title") || "Recent Incidents"}</h1>
-        <p className="text-sm text-muted-foreground">{t("incidents.subtitle") || "Share incidents you faced"}</p>
+        <h1 className="text-xl font-bold text-foreground dark:text-black">{t("incidents.title") || "Recent Incidents"}</h1>
+        <p className="text-sm text-muted-foreground dark:text-black">{t("incidents.subtitle") || "Share incidents you faced"}</p>
       </header>
 
       {/* Post composer */}
@@ -135,7 +135,13 @@ const Incidents = () => {
       {/* Grid of incidents */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {incidents.map((inc) => (
-          <IncidentCard key={inc.id} incident={inc} onLike={() => handleLike(inc.id)} onDelete={() => handleDelete(inc.id)} />
+          <IncidentCard
+            key={inc.id}
+            incident={inc}
+            onLike={() => handleLike(inc.id)}
+            onDelete={() => handleDelete(inc.id)}
+            onEdit={() => navigate(`/incidents/${inc.id}`)}
+          />
         ))}
       </div>
 

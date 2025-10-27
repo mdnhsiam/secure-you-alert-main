@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import useProfile from "@/hooks/use-profile";
 import { useI18n } from "@/i18n";
 
 const Signup = () => {
@@ -19,6 +20,7 @@ const Signup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useI18n();
+  const { setProfile } = useProfile();
 
   const handleChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -58,8 +60,14 @@ const Signup = () => {
         title: t("signup.errors.accountCreatedTitle"),
         description: t("signup.errors.accountCreatedMsg")
       });
-    
-    navigate("/setup");
+      // persist basic profile so app shows the correct name immediately
+      setProfile({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      navigate("/setup");
   };
 
   return (
