@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { useNavigate } from "react-router-dom";
 import { useI18n, availableLocales } from "@/i18n";
 import { useEffect, useState } from "react";
+import useProfile from "@/hooks/use-profile";
 import {
   Dialog,
   DialogContent,
@@ -19,20 +20,10 @@ const Settings = () => {
 
   const { t, locale, setLocale } = useI18n();
 
-  // load profile from localStorage or defaults
-  const [profile, setProfile] = useState(() => {
-    try {
-      const raw = localStorage.getItem("secureyou_profile");
-      if (raw) return JSON.parse(raw);
-    } catch (e) {}
-    return {
-      name: "Ayesha Siddika",
-      email: "ayesha@secureyou.com",
-      password: "",
-      phone: "+880 1712 345678",
-      address: "Road: 1, Building: 2, Mirpur 2...",
-    };
-  });
+  // shared profile hook (persisted to localStorage)
+  const { profile, setProfile } = useProfile();
+
+  const initials = (profile?.name || "").split(" ").map(s => s[0] || "").slice(0,2).join("").toUpperCase();
 
   // Theme preference: default OFF unless user previously selected 'dark'
   const [dark, setDark] = useState<boolean>(() => {
@@ -71,9 +62,6 @@ const Settings = () => {
     if (!editingField) return;
     const updated = { ...profile, [editingField]: editingValue };
     setProfile(updated);
-    try {
-      localStorage.setItem("secureyou_profile", JSON.stringify(updated));
-    } catch (e) {}
     setEditingField(null);
   };
 
@@ -91,10 +79,10 @@ const Settings = () => {
         <div className="mb-8">
           <div className="flex flex-col items-center mb-6">
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-              <span className="text-2xl font-bold text-primary">AS</span>
+              <span className="text-2xl font-bold text-primary">{initials}</span>
             </div>
-            <h2 className="text-xl font-bold text-foreground">Ayesha Siddika</h2>
-            <p className="text-sm text-muted-foreground">ayesha@secureyou.com</p>
+            <h2 className="text-xl font-bold text-foreground">{profile?.name}</h2>
+            <p className="text-sm text-muted-foreground">{profile?.email}</p>
           </div>
 
           <div className="space-y-3">
@@ -114,7 +102,7 @@ const Settings = () => {
                 </div>
                 <div className="flex-1 text-left">
                   <p className="font-medium text-foreground">{setting.label}</p>
-                  <p className="text-sm text-muted-foreground truncate">{setting.value}</p>
+                  <p className="text-sm text-foreground truncate">{setting.value}</p>
                 </div>
                 <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
               </button>
@@ -140,7 +128,7 @@ const Settings = () => {
                 <div className="flex-1">
                   <p className="font-medium text-foreground">{setting.label}</p>
                   {setting.value && (
-                    <p className="text-sm text-muted-foreground">{setting.value}</p>
+                    <p className="text-sm text-foreground">{setting.value}</p>
                   )}
                 </div>
                 {setting.icon === Globe ? (
@@ -219,7 +207,7 @@ const Settings = () => {
             <input
               value={editingValue}
               onChange={(e) => setEditingValue(e.target.value)}
-              className="w-full border border-input rounded-md p-2 mt-2"
+              className="w-full border border-input rounded-md p-2 mt-2 dark:text-black"
               type={editingField === "password" ? "password" : "text"}
             />
           </div>
