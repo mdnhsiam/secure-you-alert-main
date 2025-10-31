@@ -51,7 +51,11 @@ const Setup = () => {
               <Input
                 placeholder={t("setup.fullName")}
                 className="pl-10 h-12 rounded-xl"
+<<<<<<< HEAD
                 defaultValue="CtrlShiftHack"
+=======
+                defaultValue="Ayesha Siddika Mohona"
+>>>>>>> d17ddf42f4eac0d000b44eb2f523d6ddc06a69ba
               />
             </div>
           </div>
